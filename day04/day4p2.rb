@@ -84,7 +84,7 @@ end
 
 def validate_pid(value)
 	puts "Testing for pid: " + value.to_s
-	if not ( value and value.match(/\p{Nd}{9}/) )
+	if not ( value and value.length == 9 and value.match(/\p{Nd}{9}/) )
 		puts "Fails pid"
 		return false
 	end
@@ -129,3 +129,4 @@ process("input4.txt")
 process("sample.txt")
 process("valid.txt")
 process("invalid.txt")
+process("acid.txt")
