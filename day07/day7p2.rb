@@ -1,23 +1,24 @@
-def search(tree, catalog, needle="shiny gold")
-	puts "-=-"
-	puts "Searching for '" + needle.to_s + "' in provided tree"
-	puts "Catalog arrives as: " + catalog.to_s
-	catalog.push(needle)
+# This recursively drills down into a hash tree, building
+# a separate array that records how often each node is
+# encountered.
+# tree - the provided hash tree
+# inventory - the array that gets populated
+# count - how many copies of the current node were called for
+# needle - the searched-for node in this iteration
+def explode(tree, inventory, count, needle)
+	puts "Iteration starts with " + count.to_s + " copies of '" + needle.to_s + "'"
+	inventory.push(count)
+	# inventory[needle] = count
 	if not tree[needle]
-		puts "empty..."
-		return catalog
+		puts "  empty..."
+		return inventory
 	end
 	result = tree[needle]
-	result.each do |term|
-		puts "Found " + term
-		catalog = search(tree, catalog, term)
+	result.each do |node|
+		puts "Calls for " + node[1].to_s + " copies of '" + node[0].to_s + "'"
+		inventory = explode(tree, inventory, count * node[1].to_i, node[0])
 	end
-	catalog.uniq!
-	return catalog
-end
-
-def explode(tree, count, needle)
-	return count
+	return inventory
 end
 
 # This takes a string of words and returns only the parts we
@@ -58,28 +59,28 @@ def process(file)
 	return reverse
 end
 
-tree = process("sample.txt")
-puts tree.to_s
-
+puts "\n-=-=- New tree -=-=-"
 tree2 = process("sample2.txt")
 puts tree2.to_s
 
-c = explode(tree2, 0, "shiny gold")
+puts "\n-=-=- Starting recursion -=-="
+inventory = Array.new
+c = explode(tree2, inventory, 1, "shiny gold")
+
+puts "\n-=-=- Second tree result -=-=-"
 puts c.to_s
-#catalog = search(tree, catalog, "vibrant plum") #
-#puts "-=-=-=-=-=-=-=-"
-#catalog = Array.new
-#catalog = search(tree, catalog, "shiny gold") # should be 4
-#puts "Result: " + catalog.to_s
+puts ( c.sum() - 1 ).to_s + " total items"
 
-#puts "-=-=-=-=-=-=-=-"
-#catalog = Array.new
-#catalog = search(tree, catalog, "bright white") # shoud be 2
-#puts catalog.to_s
 
-#tree = process("input7.txt")
-#catalog = Array.new
-#catalog = search(tree, catalog, "shiny gold")
-#puts "Result: " + catalog.to_s
-#puts catalog.length - 1
-# process("input7.txt")
+
+puts "\n-=-=- New tree -=-=-"
+tree3 = process("input7.txt")
+puts tree3.to_s
+
+puts "\n-=-=- Starting recursion -=-="
+inventory = Array.new
+c = explode(tree3, inventory, 1, "shiny gold")
+
+puts "\n-=-=- Third tree result -=-=-"
+puts c.to_s
+puts ( c.sum() - 1 ).to_s + " total items"
